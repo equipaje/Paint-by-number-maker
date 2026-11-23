@@ -110,6 +110,19 @@ input[type=text]{font:inherit;padding:7px 9px;border:1px solid var(--line);borde
 #nudgeBar button{width:38px;height:40px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:17px;cursor:pointer;color:var(--ink)}
 #nudgeBar button.ok{background:var(--accent);border-color:var(--accent);color:#fff;width:46px}
 #nudgeBar button.del{color:var(--danger)}
+#markBar{position:absolute;left:50%;bottom:62px;transform:translateX(-50%);display:none;gap:8px;align-items:center;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 12px;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:6;font-size:13.5px;color:var(--muted);white-space:nowrap}
+#markBar button{height:40px;padding:0 12px;border:1px solid var(--line);background:#fff;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+#markBar .del{color:var(--danger)}
+#markBar .arr{width:40px;padding:0;font-size:17px}
+#markBar .del,#markBar .ok{width:44px;padding:0}
+#markBar{padding:6px !important;gap:5px !important}
+#markBar .sep{width:1px;height:28px;background:var(--line);margin:0 2px} #markBar .ok{background:var(--accent);border-color:var(--accent);color:#fff}
+#gapBar{position:absolute;left:50%;bottom:62px;transform:translateX(-50%);display:none;gap:5px;align-items:center;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:6;white-space:nowrap}
+#gapBar button{height:40px;min-width:40px;padding:0 10px;border:1px solid var(--line);background:#fff;border-radius:10px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;color:var(--ink)}
+#gapBar button[data-g=prev],#gapBar button[data-g=next]{font-size:20px;padding:0}
+#gapBar .ok{background:#e8730c;border-color:#e8730c;color:#fff}
+#gapBar .sep{width:1px;height:28px;background:var(--line);margin:0 2px}
+#gapCount{font-size:13px;color:var(--muted);min-width:40px;text-align:center;font-variant-numeric:tabular-nums}
 #nudgeBar .sep{width:1px;height:28px;background:var(--line);margin:0 3px}
 .stepper b{min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
 div.row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
@@ -125,6 +138,31 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
 @media (max-width: 760px){ .tabs button{font-size:13px} }
 #sheetHandle{display:none;justify-content:center;align-items:center;height:22px;margin:-4px 0 4px;cursor:pointer}
 #sheetHandle i{width:38px;height:4px;border-radius:2px;background:#cfc7b8}
+/* ===== full-screen layout: picture + bottom toolbar, everything else in a slide-up sheet ===== */
+#undoFab, #sheetHandle{display:none !important}
+aside{position:fixed;z-index:20;background:var(--panel);overflow-y:auto;transition:transform .22s ease;box-shadow:0 -6px 30px rgba(0,0,0,.18)}
+@media (max-width:760px){ aside{left:0;right:0;bottom:0;top:auto;width:auto;max-height:78dvh;border-radius:16px 16px 0 0;border:0;padding:0 14px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%)} }
+@media (min-width:761px){ aside{top:0;right:0;bottom:0;width:360px;border-left:1px solid var(--line);padding:0 16px 30px;transform:translateX(105%)} }
+aside.open{transform:none}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:19;display:none}
+#scrim.on{display:block}
+.sheetHead{position:sticky;top:0;background:var(--panel);display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px;z-index:2;border-bottom:1px solid var(--line);margin-bottom:6px}
+.sheetHead b{font-size:15px}
+#tb{background:var(--panel);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));min-height:100px}
+.tbg{display:none;flex-direction:column;gap:6px}
+.tbrow{display:flex;gap:6px;align-items:center}
+.tb-seg{display:flex;background:#eee9df;border-radius:10px;padding:3px;gap:2px;flex:none}
+.tb-seg button{border:0;background:transparent;border-radius:8px;height:36px;padding:0 9px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;cursor:pointer}
+.tb-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.tbb{border:1px solid var(--line);background:#fff;border-radius:10px;height:40px;padding:0 10px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer;flex:none}
+.tbb:disabled{opacity:.4;cursor:default}
+.tbb.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.tbsize{display:flex;align-items:center;gap:4px}
+.tbsize .tbb{width:40px;padding:0;font-size:18px}
+.tbsize b{min-width:54px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.tbinfo{font-size:12.5px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbspace{flex:1}
+#toast{bottom:auto;top:110px}
 </style>
 </head>
 <body>
@@ -147,6 +185,8 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
       <span class="sep"></span><button data-n="thin" aria-label="Thinner">−</button><button data-n="thick" aria-label="Thicker">+</button>
       <span class="sep"></span><button data-n="del" class="del" aria-label="Delete line">🗑</button><button data-n="ok" class="ok" aria-label="Done">✓</button>
     </div>
+    <div id="gapBar"><button data-g="prev" aria-label="Previous gap">‹</button><span id="gapCount">1 / 1</span><button data-g="next" aria-label="Next gap">›</button><span class="sep"></span><button data-g="fill" class="ok">Fill</button><button data-g="all">Fill all</button><button data-g="close" aria-label="Stop">✕</button></div>
+    <div id="markBar"><button data-m="l" class="arr" aria-label="Move mark left">←</button><button data-m="u" class="arr" aria-label="Move mark up">↑</button><button data-m="d" class="arr" aria-label="Move mark down">↓</button><button data-m="r" class="arr" aria-label="Move mark right">→</button><span class="sep"></span><button id="markDel" class="del" aria-label="Delete mark">🗑</button><button id="markOk" class="ok" aria-label="Done">✓</button></div>
     <svg id="lineOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:none"><line id="lineShadow" stroke-linecap="round"/><line id="linePrev" stroke-linecap="round"/></svg>
     <div id="empty"><div class="box">
       <div style="font-size:30px;margin-bottom:6px">🖌️</div>
@@ -162,8 +202,9 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
       <button id="zIn" aria-label="Zoom in">+</button>
     </div>
   </div>
-  <aside id="side">
+  <aside id="side" class="open">
     <div id="sheetHandle"><i></i></div>
+    <div class="sheetHead"><b id="sheetTitle">Setup</b><button class="tbb" id="sheetClose">Close</button></div>
 
     <!-- SETUP -->
     <section class="pane on" data-pane="setup">
@@ -248,6 +289,12 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
       <p class="hint">Paint black or white to fix spots in the drawing. Erase removes your touch-ups there. Touch-ups stay in place when you change the quick fixes.</p>
       <div class="btns"><button class="btn" id="undo3" disabled>Undo</button></div>
 
+      <h2>Find gaps</h2>
+      <p class="hint">Finds short breaks in outlines, where filling the break would close a shape off. Highlighted gaps can be filled one at a time or all at once.</p>
+      <label class="row"><span>Largest gap to find</span></label>
+      <div class="seg" id="gapSize"><button data-v="1">1 mm</button><button data-v="1.5" class="on">1.5 mm</button><button data-v="3">3 mm</button></div>
+      <div class="btns" style="margin-top:10px"><button class="btn" id="findGaps">Find gaps</button></div>
+
       <h2>Save the drawing</h2>
       <div class="btns exportBtns">
         <button class="btn" data-export="keypdf">Drawing PDF</button>
@@ -264,6 +311,14 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
 
     <!-- CELLS -->
     <section class="pane" data-pane="cells">
+      <div class="seg" id="cellTool"><button data-t="cells" class="on">Edit cells</button><button data-t="marks">Edit marks</button></div>
+      <div id="marksPanel" style="display:none">
+        <p class="hint">Drag a mark to move it inside its cell. Tap a mark to select it, then delete it. Tap inside a cell without a mark to add one there.</p>
+        <label class="row"><span>Mark style</span></label>
+        <div class="seg" id="markStyle"><button data-v="x" class="on">× Cross</button><button data-v="o">○ Circle</button></div>
+        <div class="btns" style="margin-top:10px"><button class="btn" id="resetMarks">Reset all marks</button></div>
+      </div>
+      <div id="cellsPanel">
       <h2>Edit cells</h2>
       <p class="hint">Tap cells to select them. Drag to move around, and pinch or use the buttons to zoom.</p>
       <div id="selInfo" class="stat"></div>
@@ -275,7 +330,10 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
         <button class="btn" id="merge" disabled>Merge</button>
         <button class="btn" id="clearSel" disabled>Deselect</button>
       </div>
+      <div class="btns" style="margin-top:8px"><button class="btn" id="smoothCell" disabled>Smooth edges</button></div>
+      <p class="hint">Smooth edges rounds off jagged bits and small notches of the selected cells, so they're easier to trace. Tap again to smooth more.</p>
       <p class="hint">Merge joins the selected cells. With a single cell selected, it merges into the neighbor it shares the most edge with.</p>
+      </div>
       <label class="checkrow"><input type="checkbox" id="tint" checked><span>Shade the areas to paint, so it's easy to tell them apart</span></label>
       <h2>History</h2>
       <div class="btns"><button class="btn" id="undo1" disabled>Undo</button></div>
@@ -319,6 +377,45 @@ details.prompt textarea{width:100%;height:180px;font:12px/1.4 ui-monospace,Menlo
     </section>
   </aside>
 </main>
+<div id="scrim"></div>
+<nav id="tb">
+  <div class="tbg" data-for="setup">
+    <div class="tbrow"><button class="tbb primary" id="tbChoose">Choose image…</button><span class="tbspace"></span><button class="tbb tbMore">⋯ More</button></div>
+    <div class="tbrow"><span class="tbinfo">Load a black-and-white drawing to start.</span></div>
+  </div>
+  <div class="tbg" data-for="drawing">
+    <div class="tbrow">
+      <div class="tb-seg" id="tbDraw"><button data-t="move">✋ Move</button><button data-t="black">● Black</button><button data-t="white">○ White</button></div>
+      <div class="tb-seg" id="tbStroke"><button data-v="free">〰 Free</button><button data-v="line">╱ Line</button></div>
+    </div>
+    <div class="tbrow">
+      <div class="tbsize" id="tbSize"><button class="tbb" id="tbSizeDn" aria-label="Smaller brush">−</button><b id="tbSizeV">2 mm</b><button class="tbb" id="tbSizeUp" aria-label="Bigger brush">+</button></div>
+      <span class="tbinfo" id="tbDrawInfo"></span>
+      <button class="tbb" id="tbGaps">Gaps</button>
+      <button class="tbb tbUndo">↶ Undo</button><button class="tbb tbMore">⋯ More</button>
+    </div>
+  </div>
+  <div class="tbg" data-for="cells">
+    <div class="tbrow">
+      <div class="tb-seg" id="tbCellTool"><button data-t="cells">Cells</button><button data-t="marks">× Marks</button></div>
+      <span id="tbCellActs" style="display:flex;gap:6px"><button class="tbb" id="tbSplit2">Split 2</button><button class="tbb" id="tbSplit3">Split 3</button><button class="tbb" id="tbSmooth">Smooth</button></span>
+      <span class="tbinfo" id="tbMarkHint">Drag a mark, or tap it to nudge or delete</span>
+    </div>
+    <div class="tbrow">
+      <span class="tbinfo" id="tbSelInfo"></span>
+      <button class="tbb" id="tbDesel">Deselect</button>
+      <button class="tbb tbUndo">↶ Undo</button><button class="tbb tbMore">⋯ More</button>
+    </div>
+  </div>
+  <div class="tbg" data-for="areas">
+    <div class="tbrow"><div class="tb-seg" id="tbArea"><button data-t="fill">Tap shape</button><button data-t="brush">Brush</button><button data-t="erase">Erase</button><button data-t="pan">Move</button></div></div>
+    <div class="tbrow"><span class="tbinfo" id="tbAreaInfo"></span><button class="tbb tbUndo">↶ Undo</button><button class="tbb tbMore">⋯ More</button></div>
+  </div>
+  <div class="tbg" data-for="preview">
+    <div class="tbrow"><button class="tbb primary" id="tbPdf">Save page PDF</button><button class="tbb" id="tbKey">Finished PNG</button></div>
+    <div class="tbrow"><span class="tbspace"></span><button class="tbb tbUndo">↶ Undo</button><button class="tbb tbMore">⋯ More</button></div>
+  </div>
+</nav>
 <div id="toast"></div>
 <div id="nameDlg" class="dlgwrap"><form class="card" id="nameForm">
   <p style="font-weight:600;margin:0 0 4px">Name this picture</p>
@@ -690,18 +787,20 @@ function cleanupNear(box){
 function snapshot(){
   markDirty(); if (typeof lastLine!=="undefined" && lastLine && !snapshot.keepLine) endLastLine();
   S.undo.push({labels:S.labels.slice(), areaOf:S.areaOf.slice(), areas:JSON.parse(JSON.stringify(S.areas)), next:S.next,
-    black:S.black.slice(), base:S.base ? S.base.slice() : null, touch:S.touch.slice(), params:{...S.params}, hasCells:S.hasCells, cellsStale:S.cellsStale});
+    marks:{...S.marks}, black:S.black.slice(), base:S.base ? S.base.slice() : null, touch:S.touch.slice(), params:{...S.params}, hasCells:S.hasCells, cellsStale:S.cellsStale});
   if (S.undo.length > 8) S.undo.shift();
   updateUndo();
 }
 function undo(){
+  if (typeof endGaps==="function") endGaps();
   const u = S.undo.pop(); if (!u) return; endLastLine();
   S.labels=u.labels; S.areaOf=u.areaOf; S.areas=u.areas; S.next=u.next;
+  S.marks=u.marks||{}; markSel=0; $("#markBar").style.display="none";
   S.black=u.black; S.base=u.base; S.touch=u.touch; S.params=u.params; S.hasCells=u.hasCells; S.cellsStale=u.cellsStale;
   showParams(S.params); updateStale(); markDirty();
   S.sel = new Set(); computeStats(); renderAreas(); render(); updateSel(); updateUndo();
 }
-function updateUndo(){ const on = !!(S && S.undo.length>0); for (const id of ["undo1","undo2","undo3","undoFab"]) $("#"+id).disabled=!on; $("#undoFab").style.display = S ? "block" : "none"; }
+function updateUndo(){ setTimeout(syncTB,0); const on = !!(S && S.undo.length>0); for (const id of ["undo1","undo2","undo3","undoFab"]) $("#"+id).disabled=!on; $("#undoFab").style.display = S ? "block" : "none"; }
 
 /* ---------------- new picture, page size, cells ---------------- */
 function enableTabs(){ $$("#tabs button").forEach(b => b.disabled = false); $("#empty").style.display="none"; }
@@ -711,7 +810,8 @@ async function newPicture(){
     const geo = pageGeometry(), {W,H,gray,srcPx} = buildGray(geo);
     S = {srcFile, W, H, gray, srcPx, geo, params:{...DEFAULT_P}, touch:new Uint8Array(W*H),
          labels:new Int32Array(W*H), areaOf:new Uint8Array(W*H), next:1, sel:new Set(), undo:[], hasCells:false, cellsStale:false,
-         areas:[{id:0, name:"Whole picture", color:"#999", template:$("#defTpl").value, cell:+$("#defCell").value, seed:1}], areaAct:0, stats:null};
+         areas:[{id:0, name:"Whole picture", color:"#999", template:$("#defTpl").value, cell:+$("#defCell").value, seed:1}], areaAct:0, stats:null,
+         marks:{}, markStyle:"x"};
     S.name = $("#projName").value.trim() || "Untitled picture";
     computeBase(); computeStats();
     showParams(S.params); setupCanvas(); fit(); enableTabs();
@@ -729,13 +829,13 @@ async function applyPageSize(){
   await work("Resizing…", async () => {
     const geo = pageGeometry(), {W,H,gray,srcPx} = buildGray(geo);
     S.touch = resampleNearest(S.touch, S.W, S.H, W, H); S.areaOf = resampleNearest(S.areaOf, S.W, S.H, W, H);
-    Object.assign(S, {W, H, gray, srcPx, geo, labels:new Int32Array(W*H), next:1, undo:[], sel:new Set(), hasCells:false, cellsStale:false});
+    Object.assign(S, {W, H, gray, srcPx, geo, labels:new Int32Array(W*H), next:1, undo:[], sel:new Set(), hasCells:false, cellsStale:false, marks:{}});
     computeBase(); computeStats(); setupCanvas(); fit(); setMode("drawing"); updateUndo(); markDirty();
   });
 }
 /* cut every area's black parts into cells */
 function makeCellsNow(){
-  S.labels = new Int32Array(S.W*S.H); S.next = 1; S.sel = new Set();
+  S.labels = new Int32Array(S.W*S.H); S.next = 1; S.sel = new Set(); S.marks = {}; markSel = 0;
   S.areas[0].template = $("#defTpl").value; S.areas[0].cell = +$("#defCell").value;
   for (const a of S.areas) genArea(a.id);
   splitDisconnected(); computeStats(); unifyAreas();
@@ -785,15 +885,34 @@ function render(){
     const o=i*4; d[o]=r; d[o+1]=g; d[o+2]=b; d[o+3]=255;
   }
   cx.putImageData(imgData,0,0);
+  if (mode === "drawing" && gaps) drawGapOverlay();
   if (mode === "cells") drawDots(cx, 1, 0, 0, "#2b2b2b");
   if (S.hasCells) $("#cellCount").textContent = countCells()+" cells to paint";
 }
 function countCells(){ if (!S || !S.stats || !S.hasCells) return 0; let n=0; const a=S.stats.area; for (let l=1;l<a.length;l++) if (a[l]) n++; return n; }
-function drawDots(ctx, s, ox, oy, color){
-  const st=S.stats, r=DOT_R_IN*DPI*s; ctx.strokeStyle=color; ctx.lineWidth=Math.max(1,0.7*s*DPI/200*1.6);
-  for (let l=1;l<st.area.length;l++){ if(!st.area[l]) continue; const p=st.pos[l], x=p%S.W, y=(p-x)/S.W;
-    ctx.beginPath(); ctx.arc(ox+(x+0.5)*s, oy+(y+0.5)*s, r, 0, Math.PI*2); ctx.stroke(); }
+/* Each cell's mark sits at its roomiest point unless you moved it (S.marks[l] = pixel) or deleted it (-1).
+   A moved mark that no longer lands inside its cell (after a split, say) falls back to the automatic spot. */
+function markPos(l){
+  const o = S.marks ? S.marks[l] : undefined;
+  if (o === -1) return -1;
+  if (o !== undefined && S.labels[o] === l) return o;
+  return S.stats.pos[l];
 }
+function drawMark(ctx, cxp, cyp, r){
+  ctx.beginPath();
+  if ((S.markStyle||"x") === "o") ctx.arc(cxp, cyp, r, 0, Math.PI*2);
+  else { const a = r*0.82; ctx.moveTo(cxp-a, cyp-a); ctx.lineTo(cxp+a, cyp+a); ctx.moveTo(cxp+a, cyp-a); ctx.lineTo(cxp-a, cyp+a); }
+  ctx.stroke();
+}
+function drawDots(ctx, s, ox, oy, color){
+  const st=S.stats, r=DOT_R_IN*DPI*s; ctx.strokeStyle=color; ctx.lineCap="round"; ctx.lineWidth=Math.max(1,0.7*s*DPI/200*1.6);
+  for (let l=1;l<st.area.length;l++){ if(!st.area[l]) continue; const p=markPos(l); if (p<0) continue; const x=p%S.W, y=(p-x)/S.W;
+    drawMark(ctx, ox+(x+0.5)*s, oy+(y+0.5)*s, r); }
+  if (ctx===cx && markSel){ const p=markPos(markSel); if (p>=0){ const x=p%S.W, y=(p-x)/S.W;
+    ctx.save(); ctx.strokeStyle="#2f7de1"; ctx.lineWidth=Math.max(2, 2.5/view.z); ctx.beginPath(); ctx.arc(x+0.5, y+0.5, r*2.1, 0, Math.PI*2); ctx.stroke(); ctx.restore(); } }
+}
+/* redraw just the marks over the last full render (fast, for dragging) */
+function redrawMarks(){ cx.putImageData(imgData,0,0); drawDots(cx, 1, 0, 0, "#2b2b2b"); }
 
 /* ---------------- view: pan & zoom ---------------- */
 const vp = $("#vp");
@@ -839,8 +958,13 @@ vp.addEventListener("pointerdown", e => {
       gesture.snapIds.add(e.pointerId); gesture.snap = true; drawLinePreview(); return;
     }
     if (gesture && gesture.type==="touch") cancelTouch();      // the stroke was really the start of a pinch
+    if (gesture && gesture.type==="markdrag" && gesture.moved){ const u=S.undo.pop(); if (u) S.marks=u.marks; updateUndo(); redrawMarks(); }
     if (gesture && gesture.type==="paint") finishPaint(true);
     startPinch(); return;
+  }
+  if (marksMode()){
+    const [ix,iy] = toImg(e.clientX, e.clientY), l = nearestMark(ix, iy);
+    if (l){ gesture = {type:"markdrag", id:e.pointerId, l, sx:e.clientX, sy:e.clientY, moved:false, from:markPos(l)}; return; }
   }
   if (brushMode()) gesture = {type:"pending", id:e.pointerId, sx:e.clientX, sy:e.clientY, kind:strokeKind()};
   else gesture = {type:"tap", sx:e.clientX, sy:e.clientY, lx:e.clientX, ly:e.clientY, moved:false};
@@ -850,6 +974,15 @@ vp.addEventListener("pointermove", e => {
   if (!ptrs.has(e.pointerId)) return;
   ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
   if (!gesture) return;
+  if (gesture.type==="markdrag"){
+    if (e.pointerId!==gesture.id) return;
+    if (!gesture.moved && Math.hypot(e.clientX-gesture.sx, e.clientY-gesture.sy) > START_MOVE){ gesture.moved=true; snapshot(); markSel=gesture.l; $("#markBar").style.display="flex"; }
+    if (gesture.moved){
+      const [ix,iy] = toImg(e.clientX, e.clientY).map(Math.floor);
+      if (markFits(gesture.l, ix, iy)){ S.marks[gesture.l] = iy*S.W+ix; redrawMarks(); }   // the whole mark stays inside its cell
+    }
+    return;
+  }
   if (gesture.type==="pending"){
     if (e.pointerId===gesture.id && Math.hypot(e.clientX-gesture.sx, e.clientY-gesture.sy) > START_MOVE) beginStroke(gesture, e.clientX, e.clientY);
     return;
@@ -870,6 +1003,11 @@ function endPtr(e){
   if (!ptrs.has(e.pointerId)) return;
   ptrs.delete(e.pointerId);
   if (!gesture) return;
+  if (gesture.type==="markdrag"){
+    const g = gesture; gesture = null;
+    if (!g.moved) onMarkTap(...toImg(e.clientX, e.clientY).map(Math.floor)); else markDirty();
+    return;
+  }
   if (gesture.type==="pending"){
     // a press without moving: one dab of the brush (no dab for a line)
     const g = gesture; gesture = null;
@@ -900,7 +1038,7 @@ function updateBrushDot(){
   el.style.setProperty("--d", d+"px"); el.title = "Actual size on screen at this zoom";
 }
 function setBrushMm(v){
-  dSizeMm = v; $("#bsV").textContent = fmtMm(v);
+  dSizeMm = v; $("#bsV").textContent = fmtMm(v); syncTB();
   $$("#bsPresets button").forEach(b => b.classList.toggle("on", +b.dataset.mm===v));
   updateBrushDot();
   if (lastLine){ lastLine.r = brushR(); redrawLastLine(); }    // resizing right after a line adjusts that line
@@ -912,6 +1050,7 @@ $("#bsPresets").addEventListener("click", e => { const b=e.target.closest("butto
 /* --- drawing touch-ups: paint black / paint white / erase touch-ups --- */
 let touchG = null;
 function startTouch(e){
+  endGaps();
   snapshot();
   gesture = {type:"touch"};
   touchG = {val: drawTool==="black" ? 1 : drawTool==="white" ? 2 : 0, last:null};
@@ -975,6 +1114,7 @@ function paintLine(L){
   touchG = null; return box;
 }
 function finishLine(){
+  endGaps();
   const [x0,y0,x1,y1] = lineEnd();
   gesture = null; $("#lineOverlay").style.display="none";
   endLastLine();
@@ -1005,7 +1145,32 @@ $("#nudgeBar").addEventListener("click", e => {
   L.x0+=dx; L.x1+=dx; L.y0+=dy; L.y1+=dy; redrawLastLine();
 });
 
+let cellTool = "cells", markSel = 0;
+function marksMode(){ return mode==="cells" && cellTool==="marks"; }
+function nearestMark(ix, iy){
+  const st=S.stats, R = Math.max(DOT_R_IN*DPI*2.2, 22/view.z); let best=0, bd=R*R;
+  for (let l=1;l<st.area.length;l++){ if(!st.area[l]) continue; const p=markPos(l); if (p<0) continue;
+    const x=p%S.W, y=(p-x)/S.W, d=(x-ix)**2+(y-iy)**2; if (d<bd){ bd=d; best=l; } }
+  return best;
+}
+function markFits(l, x, y){
+  const r = Math.ceil(DOT_R_IN*DPI*0.9), W=S.W, H=S.H, L=S.labels;
+  for (const [dx,dy] of [[0,0],[r,0],[-r,0],[0,r],[0,-r],[r,r],[-r,-r],[r,-r],[-r,r]]){
+    const xx=x+dx, yy=y+dy; if (xx<0||yy<0||xx>=W||yy>=H||L[yy*W+xx]!==l) return false; }
+  return true;
+}
+let markNudged = false;   // one undo step covers a run of nudges on the same mark
+function setMarkSel(l){ if (l !== markSel) markNudged = false; markSel = l; $("#markBar").style.display = (l && marksMode()) ? "flex" : "none"; redrawMarks(); }
+function onMarkTap(x, y){
+  const l = nearestMark(x, y);
+  if (l){ setMarkSel(l === markSel ? 0 : l); return; }
+  const c = S.labels[y*S.W+x];
+  if (c && markPos(c) < 0){ snapshot(); S.marks[c] = y*S.W+x; setMarkSel(c); toast("Mark added"); return; }
+  if (c) toast("This cell already has a mark. Drag it to move it.");
+  setMarkSel(0);
+}
 function onTap(clientX, clientY){
+  if (marksMode()){ const [x,y] = toImg(clientX, clientY).map(Math.floor); if (x>=0&&y>=0&&x<S.W&&y<S.H) onMarkTap(x,y); return; }
   const [x,y] = toImg(clientX, clientY).map(Math.floor);
   if (x<0||y<0||x>=S.W||y>=S.H) return;
   const i = y*S.W+x;
@@ -1081,11 +1246,11 @@ async function fillShape(i){
 }
 
 /* ---------------- cell editing ---------------- */
-function updateSel(){
+function updateSel(){ setTimeout(syncTB,0);
   const n = S ? S.sel.size : 0;
   $("#selInfo").textContent = n ? `${n} cell${n>1?"s":""} selected` : "No cells selected";
   $("#split2").disabled = $("#split3").disabled = n===0;
-  $("#merge").disabled = n===0; $("#clearSel").disabled = n===0;
+  $("#merge").disabled = n===0; $("#clearSel").disabled = n===0; $("#smoothCell").disabled = n===0;
 }
 async function doSplit(k){
   snapshot();
@@ -1095,6 +1260,49 @@ async function doSplit(k){
     splitDisconnected(); computeStats();
     S.sel = new Set([...newSel].filter(l => S.stats.area[l]));
     render(); updateSel();
+  });
+}
+/* Smooth the outline of each selected cell. Pixels the smoother shape gains come from the white paper
+   (the drawing gets a touch more black) or from a neighbouring cell; pixels it gives up go back to
+   whichever is next to them, the paper or the neighbour, so no gaps open up. */
+async function doSmooth(){
+  if (!S.sel.size) return;
+  snapshot();
+  await work("Smoothing…", async () => {
+    const {W,H,labels,black,touch} = S, rpx = Math.max(2, Math.round(0.4/25.4*DPI));
+    computeStats(); const st = S.stats; let box=[W,H,-1,-1], refused = 0;
+    for (const l of S.sel){
+      if (!st.area[l]) continue;
+      const pad = rpx*3+2, x0=Math.max(0,st.x0[l]-pad), y0=Math.max(0,st.y0[l]-pad), x1=Math.min(W-1,st.x1[l]+pad), y1=Math.min(H-1,st.y1[l]+pad);
+      const bw=x1-x0+1, bh=y1-y0+1, M=new Float32Array(bw*bh);
+      for (let y=0;y<bh;y++) for (let x=0;x<bw;x++) M[y*bw+x] = labels[(y+y0)*W+x+x0]===l ? 1 : 0;
+      const B = boxBlur(M, bw, bh, rpx);
+      let keep = 0; for (let k=0;k<bw*bh;k++) if (B[k] > 0.5) keep++;
+      if (keep < st.area[l]*0.5){ refused++; continue; }     // too thin to smooth without losing it
+      const removed = new Uint8Array(bw*bh), stack = [];
+      for (let y=0;y<bh;y++) for (let x=0;x<bw;x++){
+        const k=y*bw+x, i=(y+y0)*W+x+x0, inNew = B[k] > 0.5;
+        if (inNew && labels[i]!==l){ labels[i]=l; if (!black[i]){ black[i]=1; touch[i]=1; } }
+        else if (!inNew && labels[i]===l) removed[k]=1;
+      }
+      // hand each removed pixel to whatever touches it: the paper (0) or a neighbouring cell
+      const owner = new Int32Array(bw*bh).fill(-1), q = [];
+      for (let y=0;y<bh;y++) for (let x=0;x<bw;x++){ const k=y*bw+x; if (!removed[k]) continue;
+        for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const xx=x+dx, yy=y+dy; if (xx<0||yy<0||xx>=bw||yy>=bh) continue;
+          const kk=yy*bw+xx, v=labels[(yy+y0)*W+xx+x0]; if (!removed[kk] && v!==l){ owner[k]=v; q.push(k); break; } } }
+      for (let h=0; h<q.length; h++){ const k=q[h], x=k%bw, y=(k-x)/bw;
+        for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const xx=x+dx, yy=y+dy; if (xx<0||yy<0||xx>=bw||yy>=bh) continue;
+          const kk=yy*bw+xx; if (removed[kk] && owner[kk]<0){ owner[kk]=owner[k]; q.push(kk); } } }
+      for (let k=0;k<bw*bh;k++){ if (!removed[k] || owner[k]<0) continue; const x=k%bw, y=(k-x)/bw, i=(y+y0)*W+x+x0, v=owner[k];
+        labels[i]=v; if (v===0){ black[i]=0; touch[i]=2; } }
+      box=[Math.min(box[0],x0),Math.min(box[1],y0),Math.max(box[2],x1),Math.max(box[3],y1)];
+    }
+    if (box[2]>=0){ splitDisconnected(); computeStats(); unifyAreas();
+      const keepSel = new Set(S.sel);
+      mergeCrumbs(l => !keepSel.has(l) && st.x1[l]>=box[0] && S.stats.x0[l]<=box[2] && S.stats.y1[l]>=box[1] && S.stats.y0[l]<=box[3]); }
+    S.sel = new Set([...S.sel].filter(l => S.stats.area[l]));
+    render(); updateSel();
+    if (refused) toast(refused===1 ? "That cell is too thin to smooth without losing it" : refused+" cells were too thin to smooth");
   });
 }
 async function doMerge(){
@@ -1323,7 +1531,7 @@ async function saveProject(quiet){
     new Int32Array(raw.buffer,0,n).set(S.labels); raw.set(S.areaOf,n*4); raw.set(S.black,n*5); raw.set(S.touch,n*6);
     const packed = await deflate(raw);
     const payload = JSON.stringify({v:2, W:S.W, H:S.H, next:S.next, geo:S.geo, areas:S.areas, settings:settingsNow(),
-      params:S.params, hasCells:S.hasCells, cellsStale:S.cellsStale, bits:b64(packed)});
+      params:S.params, hasCells:S.hasCells, cellsStale:S.cellsStale, marks:S.marks, markStyle:S.markStyle||"x", bits:b64(packed)});
     const up = await store.assets.upload(new Blob([payload]), {type:"application/json"});
     if (!S.srcAsset){ const sb = await srcBlobForUpload(); S.srcAsset = (await store.assets.upload(sb, {type: sb.type || "image/png"})).id; }
     const th = await store.assets.upload(await thumbBlob(), {type:"image/png"});
@@ -1398,11 +1606,13 @@ async function openProject(p){
          labels:new Int32Array(raw.buffer.slice(0, n*4)), areaOf:raw.slice(n*4, n*5), black:raw.slice(n*5, n*6),
          touch: v2 ? raw.slice(n*6, n*7) : new Uint8Array(n),
          hasCells: v2 ? !!data.hasCells : true, cellsStale: v2 ? !!data.cellsStale : false,
-         sel:new Set(), undo:[], areaAct:0, stats:null, dirty:false};
+         sel:new Set(), undo:[], areaAct:0, stats:null, dirty:false,
+         marks: data.marks || {}, markStyle: data.markStyle || "x"};
     // the slider result is rebuilt for later adjustments; the saved drawing stays exactly as it was
     const saved = S.black; computeBase(); S.black = saved;
     $("#projName").value = p.name; $("#fileInfo").textContent = `Opened “${p.name}”`; $("#build").disabled=false;
     showParams(S.params); computeStats(); setupCanvas(); fit(); enableTabs(); updateStale();
+    $$("#markStyle button").forEach(x=>x.classList.toggle("on", x.dataset.v===S.markStyle));
     setMode(S.hasCells ? "cells" : "drawing"); updateSel(); updateUndo(); updateSaveBar(); renderProjects();
   });
 }
@@ -1418,13 +1628,154 @@ $("#saveBtn").onclick = () => saveProject(false);
 $("#projName").addEventListener("change", () => { if (S){ S.name=$("#projName").value.trim()||S.name; markDirty(); } });
 window.addEventListener("beforeunload", e => { if (S && S.dirty && store){ e.preventDefault(); e.returnValue=""; } });
 
+/* ---------------- gap finder ----------------
+   Closing the drawing (grow black, then shrink it back) fills every white spot narrower than the
+   chosen size. Most of those spots are just inside corners. A spot counts as a gap only when filling
+   it separates the white on either side of it, i.e. it closes an outline. */
+let gaps = null, gapIdx = 0, gapMm = 1.5;
+function findGaps(maxMm){
+  const {W,H,black,touch} = S, r = Math.max(1.5, maxMm/25.4*DPI/2);
+  const closed = erode(dilate(black, W, H, r), W, H, r);
+  const diff = new Uint8Array(W*H);
+  for (let i=0;i<W*H;i++) diff[i] = closed[i] && !black[i] && touch[i]!==2 ? 1 : 0;   // never undo a deliberate white touch-up
+  const {lab, n, sizes} = components(diff, W, H);
+  const x0=new Int32Array(n+1).fill(1e9), y0=new Int32Array(n+1).fill(1e9), x1=new Int32Array(n+1).fill(-1), y1=new Int32Array(n+1).fill(-1);
+  for (let i=0;i<W*H;i++){ const c=lab[i]; if (!c) continue; const x=i%W, y=(i-x)/W;
+    if (x<x0[c])x0[c]=x; if (x>x1[c])x1[c]=x; if (y<y0[c])y0[c]=y; if (y>y1[c])y1[c]=y; }
+  const out = [], pad = Math.ceil(r)+3, minSide = Math.max(6, r*r*0.4);
+  for (let c=1;c<=n;c++){
+    if (sizes[c] < 3) continue;
+    if (Math.max(x1[c]-x0[c], y1[c]-y0[c]) > 8*r) continue;            // long white channels are not gaps
+    const wx0=Math.max(0,x0[c]-pad), wy0=Math.max(0,y0[c]-pad), wx1=Math.min(W-1,x1[c]+pad), wy1=Math.min(H-1,y1[c]+pad);
+    const ww=wx1-wx0+1, wh=wy1-wy0+1, L=new Int32Array(ww*wh), sz=[0], stack=[];
+    // label the white around the spot, leaving the spot itself out
+    for (let k=0;k<ww*wh;k++){
+      if (L[k]) continue; const kx=k%ww, ky=(k-kx)/ww, i=(ky+wy0)*W+kx+wx0;
+      if (black[i] || lab[i]===c) continue;
+      const id=sz.length; sz.push(0); L[k]=id; stack.push(k);
+      while (stack.length){ const q=stack.pop(), qx=q%ww, qy=(q-qx)/ww; sz[id]++;
+        for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx=qx+dx, ny=qy+dy; if (nx<0||ny<0||nx>=ww||ny>=wh) continue;
+          const nk=ny*ww+nx, ni=(ny+wy0)*W+nx+wx0; if (!L[nk] && !black[ni] && lab[ni]!==c){ L[nk]=id; stack.push(nk); } } }
+    }
+    const touching = new Set(), pix = []; let sx=0, sy=0;
+    for (let ky=0;ky<wh;ky++) for (let kx=0;kx<ww;kx++){ const i=(ky+wy0)*W+kx+wx0; if (lab[i]!==c) continue;
+      pix.push(i); sx+=kx+wx0; sy+=ky+wy0;
+      for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx=kx+dx, ny=ky+dy; if (nx<0||ny<0||nx>=ww||ny>=wh) continue;
+        const id=L[ny*ww+nx]; if (id && sz[id]>=minSide) touching.add(id); } }
+    if (touching.size < 2) continue;
+    out.push({pix:Int32Array.from(pix), cx:sx/pix.length, cy:sy/pix.length, rad:Math.max(x1[c]-x0[c], y1[c]-y0[c])/2 + r});
+  }
+  out.sort((a,b) => (Math.round(a.cy/150)-Math.round(b.cy/150)) || (a.cx-b.cx));   // read order: top to bottom, left to right
+  return out;
+}
+function drawGapOverlay(){
+  cx.save(); cx.fillStyle = "#ff8a1f";
+  for (const g of gaps) for (const p of g.pix){ const x=p%S.W; cx.fillRect(x, (p-x)/S.W, 1, 1); }
+  gaps.forEach((g,k) => { cx.beginPath(); cx.arc(g.cx+0.5, g.cy+0.5, g.rad+6/view.z, 0, Math.PI*2);
+    cx.strokeStyle = k===gapIdx ? "#2f7de1" : "#ff8a1f"; cx.lineWidth = (k===gapIdx ? 3.5 : 2)/view.z; cx.stroke(); });
+  cx.restore();
+}
+function showGapBar(){
+  const on = !!(gaps && gaps.length && mode==="drawing");
+  $("#gapBar").style.display = on ? "flex" : "none";
+  if (on) $("#gapCount").textContent = `${gapIdx+1} / ${gaps.length}`;
+}
+function goGap(k){
+  gapIdx = (k + gaps.length) % gaps.length;
+  const g = gaps[gapIdx], r = vp.getBoundingClientRect();
+  const z = Math.min(8, Math.max(view.z, 150/(2*g.rad+20)));
+  view = {z, tx: r.width/2 - (g.cx+0.5)*z, ty: r.height*0.42 - (g.cy+0.5)*z}; applyView();
+  render(); showGapBar();
+}
+function endGaps(){ if (!gaps) return; gaps = null; showGapBar(); if (S) render(); }
+async function startGaps(){
+  if (!S) return;
+  endLastLine();
+  let found = [];
+  await work("Looking for gaps…", async () => { found = findGaps(gapMm); });
+  if (!found.length){ gaps = null; showGapBar(); render(); toast(`No gaps up to ${gapMm} mm found. You can choose a bigger size in More.`, 3500); return; }
+  closeSheet(); gaps = found; goGap(0);
+  toast(found.length===1 ? "Found 1 gap" : `Found ${found.length} gaps`);
+}
+function fillGaps(list){
+  snapshot();
+  for (const g of list) for (const p of g.pix){ S.touch[p] = 1; S.black[p] = 1; }   // a black touch-up, so Erase can take it back
+  drawingChanged();
+  const done = new Set(list);
+  gaps = gaps.filter(g => !done.has(g));
+  if (!gaps.length){ gaps = null; showGapBar(); render(); toast(list.length>1 ? `Filled ${list.length} gaps` : "All gaps filled"); return; }
+  goGap(Math.min(gapIdx, gaps.length-1));
+}
+$("#gapBar").addEventListener("click", e => {
+  const b = e.target.closest("[data-g]"); if (!b || !gaps) return;
+  const g = b.dataset.g;
+  if (g==="prev") goGap(gapIdx-1); else if (g==="next") goGap(gapIdx+1);
+  else if (g==="fill") fillGaps([gaps[gapIdx]]);
+  else if (g==="all") fillGaps(gaps.slice());
+  else if (g==="close") endGaps();
+});
+$("#gapSize").addEventListener("click", e => { const b=e.target.closest("button"); if (!b) return; gapMm = +b.dataset.v; $$("#gapSize button").forEach(x=>x.classList.toggle("on",x===b)); });
+$("#findGaps").onclick = startGaps;
+$("#tbGaps").onclick = () => gaps ? endGaps() : startGaps();
+
+/* ---------------- bottom toolbar & options sheet ---------------- */
+const SHEET_TITLES = {setup:"Setup", drawing:"Drawing options", cells:"Cell options", areas:"Areas", preview:"Preview & save"};
+function openSheet(){ $("#sheetTitle").textContent = SHEET_TITLES[mode]||"Options"; $("#side").classList.add("open"); $("#scrim").classList.add("on"); $("#side").scrollTop = 0; }
+function closeSheet(){ $("#side").classList.remove("open"); $("#scrim").classList.remove("on"); }
+$("#sheetClose").onclick = closeSheet;
+$("#scrim").onclick = () => { if (S || mode!=="setup") closeSheet(); };
+$$(".tbMore").forEach(b => b.onclick = openSheet);
+$$(".tbUndo").forEach(b => b.onclick = () => undo());
+function syncTB(){
+  try {
+    $$("#tb .tbg").forEach(g => g.style.display = g.dataset.for===mode ? "flex" : "none");
+    const canUndo = !!(S && S.undo.length); $$(".tbUndo").forEach(b => b.disabled = !canUndo);
+    // drawing
+    $$("#tbDraw button").forEach(b => b.classList.toggle("on", b.dataset.t===drawTool));
+    $$("#tbStroke button").forEach(b => b.classList.toggle("on", b.dataset.v===strokeMode));
+    const painting = drawTool==="black" || drawTool==="white";
+    $("#tbStroke").style.visibility = painting ? "visible" : "hidden";
+    $("#tbSize").style.display = drawTool==="move" ? "none" : "flex";
+    $("#tbSizeV").textContent = fmtMm(dSizeMm);
+    $("#tbGaps").classList.toggle("primary", !!gaps);
+    $("#tbDrawInfo").textContent = drawTool==="move" ? "Drag to move, pinch to zoom" : drawTool==="clear" ? "Erasing touch-ups" : "";
+    // cells
+    $$("#tbCellTool button").forEach(b => b.classList.toggle("on", b.dataset.t===cellTool));
+    const n = S ? S.sel.size : 0, marks = cellTool==="marks";
+    $("#tbCellActs").style.display = marks ? "none" : "flex";
+    $("#tbMarkHint").style.display = marks ? "block" : "none";
+    for (const id of ["tbSplit2","tbSplit3","tbSmooth","tbDesel"]) $("#"+id).disabled = n===0;
+    $("#tbDesel").style.display = marks ? "none" : "block";
+    $("#tbSelInfo").textContent = marks ? "" : n ? `${n} cell${n>1?"s":""} selected` : (S && S.hasCells ? countCells()+" cells · tap to select" : "");
+    // areas
+    $$("#tbArea button").forEach(b => b.classList.toggle("on", b.dataset.t===areaTool));
+    const a = S ? areaById(S.areaAct) : null;
+    $("#tbAreaInfo").textContent = a ? (a.id ? "Adding to: "+a.name : "Pick or add an area in More") : "";
+  } catch(e) {}
+}
+$("#tbChoose").onclick = () => $("#file").click();
+$("#tbDraw").addEventListener("click", e => { const b=e.target.closest("button"); if (b) $(`#drawTool [data-t=${b.dataset.t}]`).click(); });
+$("#tbStroke").addEventListener("click", e => { const b=e.target.closest("button"); if (b) $(`#strokeMode [data-v=${b.dataset.v}]`).click(); });
+$("#tbSizeDn").onclick = () => $("#bsDown").click();
+$("#tbSizeUp").onclick = () => $("#bsUp").click();
+$("#tbCellTool").addEventListener("click", e => { const b=e.target.closest("button"); if (b) $(`#cellTool [data-t=${b.dataset.t}]`).click(); });
+$("#tbSplit2").onclick = () => $("#split2").click();
+$("#tbSplit3").onclick = () => $("#split3").click();
+$("#tbSmooth").onclick = () => $("#smoothCell").click();
+$("#tbDesel").onclick = () => $("#clearSel").click();
+$("#tbArea").addEventListener("click", e => { const b=e.target.closest("button"); if (b) $(`#areaTool [data-t=${b.dataset.t}]`).click(); });
+$("#tbPdf").onclick = () => doExport("pdf");
+$("#tbKey").onclick = () => doExport("key");
+document.addEventListener("click", () => setTimeout(syncTB, 0), true);
+
 /* ---------------- modes & setup wiring ---------------- */
 function setMode(m){
-  mode = m; if (typeof endLastLine==="function") endLastLine();
+  if (typeof endGaps==="function") endGaps();
+  mode = m; if (typeof endLastLine==="function") endLastLine(); markSel = 0; $("#markBar").style.display="none";
   $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.mode===m));
   $$("section.pane").forEach(p => p.classList.toggle("on", p.dataset.pane===m));
-  $("#side").classList.remove("collapsed");
-  $("#side").scrollTop = 0;            // each panel opens at its top (Setup shows Choose image first)
+  m==="setup" ? openSheet() : closeSheet();
+  $("#side").scrollTop = 0; setTimeout(syncTB,0);   // each panel opens at its top (Setup shows Choose image first)
   $("#brushCursor").style.display="none";
   if (S){ if (m!=="cells"){ S.sel.clear(); updateSel(); } renderAreas(); render(); }
 }
@@ -1462,6 +1813,7 @@ $("#makeCells").onclick = async () => {
 };
 /* quick fixes: each tap applies right away */
 async function applyDrawingParams(p){
+  endGaps();
   if (!S) return;
   snapshot(); S.params = p; showParams(p);
   await work("Updating drawing…", async () => { computeBase(); render(); drawingChanged(); });
@@ -1529,8 +1881,30 @@ buildPrompt();
 $("#split2").onclick = () => doSplit(2);
 $("#split3").onclick = () => doSplit(3);
 $("#merge").onclick = doMerge;
+$("#smoothCell").onclick = doSmooth;
 $("#clearSel").onclick = () => { S.sel.clear(); render(); updateSel(); };
 $("#tint").onchange = render;
+$("#cellTool").addEventListener("click", e => { const b=e.target.closest("button"); if (!b) return; cellTool=b.dataset.t;
+  $$("#cellTool button").forEach(x=>x.classList.toggle("on",x===b));
+  $("#marksPanel").style.display = cellTool==="marks" ? "block" : "none"; $("#cellsPanel").style.display = cellTool==="marks" ? "none" : "block";
+  if (S){ S.sel.clear(); updateSel(); setMarkSel(0); render(); } });
+$("#markStyle").addEventListener("click", e => { const b=e.target.closest("button"); if (!b || !S) return; S.markStyle=b.dataset.v;
+  $$("#markStyle button").forEach(x=>x.classList.toggle("on",x===b)); markDirty(); redrawMarks(); });
+$("#markDel").onclick = () => { if (!markSel) return; snapshot(); S.marks[markSel] = -1; setMarkSel(0); toast("Mark deleted. Tap inside the cell to add one back."); };
+$("#markOk").onclick = () => setMarkSel(0);
+$("#markBar").addEventListener("click", e => {
+  const b = e.target.closest("[data-m]"); if (!b || !markSel) return;
+  const step = 2;   // pixels ≈ 0.25 mm per tap
+  const p = markPos(markSel); if (p < 0) return;
+  const x = p % S.W + (b.dataset.m==="l" ? -step : b.dataset.m==="r" ? step : 0);
+  const y = (p - p % S.W)/S.W + (b.dataset.m==="u" ? -step : b.dataset.m==="d" ? step : 0);
+  if (!markFits(markSel, x, y)){ toast("That's the edge of the cell"); return; }
+  if (!markNudged){ snapshot(); markNudged = true; }
+  S.marks[markSel] = y*S.W + x; markDirty(); redrawMarks();
+});
+$("#resetMarks").onclick = async () => { if (!S || !Object.keys(S.marks).length) return;
+  if (!(await ask("Put every mark back in its automatic spot? Moved and deleted marks are reset.", "Reset"))) return;
+  snapshot(); S.marks = {}; setMarkSel(0); };
 $("#undo1").onclick = $("#undo2").onclick = $("#undo3").onclick = $("#undoFab").onclick = () => undo();
 setTool("fill");
 
@@ -1546,6 +1920,7 @@ setTool("fill");
     updateSaveBar(); loadProjects();
   }
 })();
+syncTB();
 </script>
 </body>
 </html>
